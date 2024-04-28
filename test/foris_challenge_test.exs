@@ -20,50 +20,68 @@ defmodule ForisChallengeTest do
           days_amount: 1,
           minutes: 25
         }
-      }
+      },
+      input: [
+        "Student Isabella\n",
+        "Student Juan\n",
+        "Student Felipe\n",
+        "Presence Juan 1 13:10 14:00 F102\n",
+        "Presence Juan 2 15:20 15:54 F300\n",
+        "Presence Felipe 3 11:00 11:25 R501"
+      ]
     }
   end
 
-  test "Should return accumulator with new student", %{acc: acc} do
-    # Arrange:
-    line = "Student Maria\n"
+  describe "&ForisChallenge.run_logic/1" do
+    test "Should return report with name, total minutes and total days of each student", %{
+      input: input
+    } do
+      # Arrange: function uses input from setup
 
-    # Act:
-    result = ForisChallenge.process_line(line, acc)
+      # Act:
+      result = ForisChallenge.run_logic(input)
 
-    # Assert:
-    assert %{"Maria" => student_info, "Isabella" => _, "Juan" => _, "Felipe" => _} = result
-    assert length(student_info.days_list) == 0
-    assert student_info.days_amount == 0
-    assert student_info.minutes == 0
+      # Assert:
+      expected_string = """
+      Juan: 84 minutes in 2 days
+      Felipe: 25 minutes in 1 day
+      Isabella: 0 minutes
+      """
+
+      # Mock multiline string brings \n at the end by default, so had to create variable and trim it
+      assert result == String.trim(expected_string)
+    end
+
+    test "Should return accumulator with new student", %{acc: acc} do
+      # Arrange:
+      line = "Student Maria\n"
+
+      # Act:
+      result = ForisChallenge.process_line(line, acc)
+
+      # Assert:
+      assert %{"Maria" => student_info, "Isabella" => _, "Juan" => _, "Felipe" => _} = result
+      assert length(student_info.days_list) == 0
+      assert student_info.days_amount == 0
+      assert student_info.minutes == 0
+    end
+
+    test "Should return multi-line string sorted in descending order", %{acc: acc} do
+      # Arrange: function uses acc from setup
+
+      # Act:
+      result = ForisChallenge.build_result(acc)
+
+      # Assert:
+      list = String.split(result, "\n")
+      assert length(list) == 3
+      assert Enum.at(list, 0) == "Juan: 84 minutes in 2 days"
+      assert Enum.at(list, 1) == "Felipe: 25 minutes in 1 day"
+      assert Enum.at(list, 2) == "Isabella: 0 minutes"
+    end
   end
 
-  test "Should return the time struct ~T[14:15:00]" do
-    # Arrange:
-    input = "14:15"
-
-    # Act:
-    result = ForisChallenge.define_time(input)
-
-    # Assert:
-    assert result == ~T[14:15:00]
-  end
-
-  test "Should return multi-line string sorted in descending order", %{acc: acc} do
-    # Arrange: function uses acc from setup
-
-    # Act:
-    result = ForisChallenge.build_result(acc)
-
-    # Assert:
-    list = String.split(result, "\n")
-    assert length(list) == 3
-    assert Enum.at(list, 0) == "Juan: 84 minutes in 2 days"
-    assert Enum.at(list, 1) == "Felipe: 25 minutes in 1 day"
-    assert Enum.at(list, 2) == "Isabella: 0 minutes"
-  end
-
-  describe "&handle_command/2" do
+  describe "&ForisChallenge.handle_command/2" do
     test "Should add a student with empty information to the accumulator", %{acc: acc} do
       # Arrange:
       command = ["Student", "Maria"]
@@ -125,6 +143,17 @@ defmodule ForisChallengeTest do
       assert length(student_info.days_list) == 2
       assert student_info.days_amount == 2
       assert student_info.minutes == 94
+    end
+
+    test "Should return the time struct ~T[14:15:00]" do
+      # Arrange:
+      input = "14:15"
+
+      # Act:
+      result = ForisChallenge.define_time(input)
+
+      # Assert:
+      assert result == ~T[14:15:00]
     end
   end
 end

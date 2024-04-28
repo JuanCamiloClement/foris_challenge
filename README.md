@@ -14,6 +14,8 @@ El archivo de texto que vamos a procesor lo llamamos `commands.txt` y lo encontr
 
 Definimos una funcion `&ForisChallenge.run/0`, la cual corre el resto de funciones que definimos en el módulo (es decir, inicia recibiendo el input y genera el output).
 
+Entre el input y el output, esta función utiliza `&ForisChallenge.run_logic/1`, la cual contiene las funciones puras que creamos para manejar la lógica del reto. Se realizó de esta manera con el objetivo de poder crear pruebas unitarias que cubrieran toda la lógica de las funciones creadas y utilizadas.
+
 Se decidió capturar la entrada estándar haciendo uso de `IO.stream(:stdio, :line)`:
 - Esta función nos permite crear un stream a partir de lo recibido a través de la entrada estándar (que precisamos con el parámetro `:stdio`). El átomo `:line` como segundo parámetro nos ayuda a que el stream se cree a partir de cada línea, de lo contrario se crearía caracter por caracter.
 - Siendo el stream un enumerable en Elixir, podemos ayudarnos de cualquier función del módulo `Enum` para procesarlo. En este caso, usamos `&Enum.reduce/3` para crear un mapa (parejas llave-valor: la llave corresponde al nombre del estudiante y el valor corresponde a la información de cada uno).

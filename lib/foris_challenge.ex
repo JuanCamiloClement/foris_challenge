@@ -1,9 +1,12 @@
 defmodule ForisChallenge do
   def run do
     IO.stream(:stdio, :line)
-    |> Enum.reduce(%{}, &process_line(&1, &2))
-    |> build_result
+    |> run_logic
     |> IO.puts()
+  end
+
+  def run_logic(stream) do
+    Enum.reduce(stream, %{}, &process_line(&1, &2)) |> build_result
   end
 
   def process_line(line, acc) do

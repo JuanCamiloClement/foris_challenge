@@ -70,7 +70,7 @@ defmodule ForisChallenge do
     time
   end
 
-  def prepare_result(sorted_data) do
+  defp prepare_result(sorted_data) do
     Enum.reduce(sorted_data, "", fn element, acc ->
       {name, info} = element
 

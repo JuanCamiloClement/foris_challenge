@@ -49,6 +49,20 @@ defmodule ForisChallengeTest do
     assert result == ~T[14:15:00]
   end
 
+  test "Should return multi-line string sorted in descending order", %{acc: acc} do
+    # Arrange: function uses acc from setup
+
+    # Act:
+    result = ForisChallenge.build_result(acc)
+
+    # Assert:
+    list = String.split(result, "\n")
+    assert length(list) == 3
+    assert Enum.at(list, 0) == "Juan: 84 minutes in 2 days"
+    assert Enum.at(list, 1) == "Felipe: 25 minutes in 1 day"
+    assert Enum.at(list, 2) == "Isabella: 0 minutes"
+  end
+
   describe "&handle_command/2" do
     test "Should add a student with empty information to the accumulator", %{acc: acc} do
       # Arrange:

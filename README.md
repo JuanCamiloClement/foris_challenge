@@ -38,14 +38,9 @@ git clone git@github.com:JuanCamiloClement/foris_challenge.git
 cd foris_challenge
 ```
 
-3. Instala las dependencias y compila el proyecto:
+3. Corre el proyecto con el siguiente comando:
 
 Asegúrate de tener instalado Elixir, luego corre:
-```
-mix setup
-```
-
-4. Corre el proyecto con el siguiente comando:
 ```
 cat commands.txt | elixir -r lib/foris_challenge.ex -e ForisChallenge.run
 ```
